@@ -8,6 +8,7 @@ Using docker, java, github actions
 
 License [![LICENSE](https://img.shields.io/github/license/Blade-iii/sem.svg?style=flat-square)](https://github.com/Blade-iii/sem/blob/master/LICENSE)
 
-Release [![Releases](https://img.shields.io/github/release/Blade-iii/sem/all.svg?style=flat-square)](https://github.com/Blade-iii/sem/releases)
+[![Latest Release](https://img.shields.io/github/v/release/Blade-iii/sem)](https://github.com/Blade-iii/sem/releases)
+
 
 
