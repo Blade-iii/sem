@@ -10,29 +10,13 @@ jobs:
         uses: actions/checkout@v2
         with:
           submodules: recursive
-
       - name: Set up JDK 11
         uses: actions/setup-java@v2
         with:
           java-version: '11'
           distribution: 'adopt'
-
       - name: Build with Maven
         run: mvn package
-
-      # Set up Docker and Docker Compose
-      - name: Set up Docker
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y docker.io
-          sudo systemctl start docker
-          sudo systemctl enable docker
-
-      - name: Install Docker Compose
-        run: |
-          sudo apt-get install -y docker-compose
-
-      # Navigate to the db directory before running docker-compose
       - name: Run docker compose
-        working-directory: ./db  # Ensure this is the correct path
-        run: docker-compose up --abort-on-container-exit
+        run: docker compose up --abort-on-container-exit
+
