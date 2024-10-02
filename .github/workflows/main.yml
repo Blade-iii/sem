@@ -26,4 +26,5 @@ jobs:
           sudo apt-get install -y docker-compose
 
       - name: Run docker compose
+        working-directory: ./db
         run: docker-compose up --abort-on-container-exit
