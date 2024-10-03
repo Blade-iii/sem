@@ -8,7 +8,8 @@ Develop Build status ![GitHub Workflow Status (branch)](https://img.shields.io/g
 
 License [![LICENSE](https://img.shields.io/github/license/Blade-iii/sem.svg?style=flat-square)](https://github.com/Blade-iii/sem/blob/master/LICENSE)
 
-[GitHub Release](https://img.shields.io/github/v/release/blade-iii/sem?include_prereleases&sort=date)
+![GitHub Release](https://img.shields.io/github/v/release/blade-iii/sem?include_prereleases&sort=date)
+
 
 
 
