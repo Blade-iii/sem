@@ -114,6 +114,49 @@ public class App
 //        }
 //    }
 
+
+
+    public Employee addEmployee(int ID, String firstName, String lastName, String title, int salary, String department, String manager) {
+        String strInsert =
+                "INSERT INTO employees (emp_no, first_name, last_name, title, salary, dept_name, manager) " +
+                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
+
+        try {
+            // Create a PreparedStatement
+            PreparedStatement pstmt = con.prepareStatement(strInsert);
+
+            // Set parameters
+            pstmt.setInt(1, ID); // emp_no
+            pstmt.setString(2, firstName); // first_name
+            pstmt.setString(3, lastName); // last_name
+            pstmt.setString(4, title); // title
+            pstmt.setInt(5, salary); // salary
+            pstmt.setString(6, department); // dept_name
+            pstmt.setString(7, manager); // manager
+
+            // Execute SQL statement
+            pstmt.executeUpdate();
+            System.out.println("Employee added successfully.");
+
+            // Create and return the Employee object
+            Employee emp = new Employee();
+            emp.emp_no = ID;
+            emp.first_name = firstName;
+            emp.last_name = lastName;
+            emp.title = title;
+            emp.salary = salary;
+            emp.dept_name = department;
+            emp.manager = manager;
+
+            return emp; // Return the newly created employee
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to add employee");
+            return null; // Return null in case of failure
+        }
+    }
+
+
     public List<Employee> getAllSalaries() {
         List<Employee> employees = new ArrayList<>();  // List to store employees
         try {
