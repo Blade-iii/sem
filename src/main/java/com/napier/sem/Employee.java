@@ -1,5 +1,7 @@
 package com.napier.sem;
 
+import java.util.Date;
+
 /**
  * Represents an employee
  */
@@ -24,6 +26,13 @@ public class Employee
      * Employee's job title
      */
     public String title;
+
+    public String gender;
+
+    public Date hire_date;
+
+    public Date birth_date;
+
 
     /**
      * Employee's salary

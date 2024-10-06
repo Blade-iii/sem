@@ -14,8 +14,12 @@ public class App
         // Connect to database
         a.connect();
 
+      //  a.addEmployee(500000,"Simon","Pegg","M","2024-12-19","1985-07-02");
+
+        a.getEmployee(500000);
+
         // Get all salaries
-        a.displaySalaries(a.getAllSalaries());
+        //a.displaySalaries(a.getAllSalaries());
 
 
 
@@ -46,19 +50,22 @@ public class App
             System.out.println("Connecting to database...");
             try {
                 // Wait a bit for db to start
-                Thread.sleep(1000);
-                // Connect to database (update URL as necessary)
-                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/employees?useSSL=false", "root", "example");
+                Thread.sleep(30000);
+                // Connect to database
+                con = DriverManager.getConnection("jdbc:mysql://db:3306/employees?useSSL=false", "root", "example");
                 System.out.println("Successfully connected");
-                break;
+                return; // Exit the method after successful connection
             } catch (SQLException sqle) {
-                System.out.println("Failed to connect to database attempt " + Integer.toString(i));
+                System.out.println("Failed to connect to database attempt " + (i + 1));
                 System.out.println(sqle.getMessage());
-                sqle.printStackTrace(); // Print detailed error information
             } catch (InterruptedException ie) {
                 System.out.println("Thread interrupted? Should not happen.");
             }
         }
+
+        // If we reach here, it means all connection attempts failed
+        System.err.println("Failed to connect to the database after " + retries + " attempts.");
+        System.exit(-1); // Exit or handle this situation as necessary
     }
 
 
@@ -80,46 +87,46 @@ public class App
             }
         }
     }
-//    public Employee getEmployee(int ID)
-//    {
-//        try
-//        {
-//            // Create an SQL statement
-//            Statement stmt = con.createStatement();
-//            // Create string for SQL statement
-//            String strSelect =
-//                    "SELECT emp_no, first_name, last_name "
-//                            + "FROM employees "
-//                            + "WHERE emp_no = " + ID;
-//            // Execute SQL statement
-//            ResultSet rset = stmt.executeQuery(strSelect);
-//            // Return new employee if valid.
-//            // Check one is returned
-//            if (rset.next())
-//            {
-//                Employee emp = new Employee();
-//                emp.emp_no = rset.getInt("emp_no");
-//                emp.first_name = rset.getString("first_name");
-//                emp.last_name = rset.getString("last_name");
-//                return emp;
-//            }
-//            else
-//                return null;
-//        }
-//        catch (Exception e)
-//        {
-//            System.out.println(e.getMessage());
-//            System.out.println("Failed to get employee details");
-//            return null;
-//        }
-//    }
+    public Employee getEmployee(int ID) {
+        Statement stmt = null;
+        ResultSet rset = null;
+        try {
+            stmt = con.createStatement();
+            String strSelect = "SELECT emp_no, first_name, last_name FROM employees WHERE emp_no = " + ID;
+            rset = stmt.executeQuery(strSelect);
+
+            if (rset.next()) {
+                Employee emp = new Employee();
+                emp.emp_no = rset.getInt("emp_no");
+                emp.first_name = rset.getString("first_name");
+                emp.last_name = rset.getString("last_name");
+                return emp;
+            } else {
+                return null; // Employee not found
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get employee details");
+            return null;
+        } finally {
+            // Close ResultSet and Statement to prevent resource leaks
+            try {
+                if (rset != null) rset.close();
+                if (stmt != null) stmt.close();
+            } catch (SQLException e) {
+                System.out.println("Failed to close resources: " + e.getMessage());
+            }
+        }
+    }
 
 
 
-    public Employee addEmployee(int ID, String firstName, String lastName, String title, int salary, String department, String manager) {
+
+
+    public Employee addEmployee(int ID, String firstName, String lastName, String gender, String hireDateStr, String birthDateStr) {
         String strInsert =
-                "INSERT INTO employees (emp_no, first_name, last_name, title, salary, dept_name, manager) " +
-                        "VALUES (?, ?, ?, ?, ?, ?, ?)";
+                "INSERT INTO employees (emp_no, first_name, last_name, gender,  hire_date, birth_date) " +
+                        "VALUES (?, ?, ?, ?, ?, ?)";
 
         try {
             // Create a PreparedStatement
@@ -129,10 +136,15 @@ public class App
             pstmt.setInt(1, ID); // emp_no
             pstmt.setString(2, firstName); // first_name
             pstmt.setString(3, lastName); // last_name
-            pstmt.setString(4, title); // title
-            pstmt.setInt(5, salary); // salary
-            pstmt.setString(6, department); // dept_name
-            pstmt.setString(7, manager); // manager
+            pstmt.setString(4, gender); // gender
+
+
+            // Convert String dates to java.sql.Date
+            Date hireDate = Date.valueOf(hireDateStr); // Format: YYYY-MM-DD
+            Date birthDate = Date.valueOf(birthDateStr); // Format: YYYY-MM-DD
+
+            pstmt.setDate(5, hireDate); // hire_date
+            pstmt.setDate(6, birthDate); // birth_date
 
             // Execute SQL statement
             pstmt.executeUpdate();
@@ -143,10 +155,9 @@ public class App
             emp.emp_no = ID;
             emp.first_name = firstName;
             emp.last_name = lastName;
-            emp.title = title;
-            emp.salary = salary;
-            emp.dept_name = department;
-            emp.manager = manager;
+            emp.gender = gender; // Don't forget to set the gender
+            emp.hire_date = hireDate; // Set hire date in Employee object
+            emp.birth_date = birthDate; // Set birth date in Employee object
 
             return emp; // Return the newly created employee
         } catch (SQLException e) {
@@ -155,6 +166,8 @@ public class App
             return null; // Return null in case of failure
         }
     }
+
+
 
 
     public List<Employee> getAllSalaries() {
@@ -199,7 +212,6 @@ public class App
             return null;
         }
     }
-
 
     public void displayEmployee(Employee emp)
     {
