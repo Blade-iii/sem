@@ -1,6 +1,8 @@
 package com.napier.sem;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class App
 {
@@ -11,15 +13,17 @@ public class App
 
         // Connect to database
         a.connect();
-        // Get Employee
-        //Employee emp = a.getEmployee(255530);
-        Employee emp = a.getSalary();
-        // Display results
-        a.displayEmployee(emp);
+
+        // Get all salaries
+        a.displaySalaries(a.getAllSalaries());
+
+
 
         // Disconnect from database
         a.disconnect();
     }
+
+
     /**
      * Connection to MySQL database.
      */
@@ -28,43 +32,35 @@ public class App
     /**
      * Connect to the MySQL database.
      */
-    public void connect()
-    {
-        try
-        {
+    public void connect() {
+        try {
             // Load Database driver
             Class.forName("com.mysql.cj.jdbc.Driver");
-        }
-        catch (ClassNotFoundException e)
-        {
+        } catch (ClassNotFoundException e) {
             System.out.println("Could not load SQL driver");
             System.exit(-1);
         }
 
         int retries = 10;
-        for (int i = 0; i < retries; ++i)
-        {
+        for (int i = 0; i < retries; ++i) {
             System.out.println("Connecting to database...");
-            try
-            {
+            try {
                 // Wait a bit for db to start
                 Thread.sleep(1000);
-                // Connect to database
-                con = DriverManager.getConnection("jdbc:mysql://db:3306/employees?useSSL=false", "root", "example");
+                // Connect to database (update URL as necessary)
+                con = DriverManager.getConnection("jdbc:mysql://localhost:3306/employees?useSSL=false", "root", "example");
                 System.out.println("Successfully connected");
                 break;
-            }
-            catch (SQLException sqle)
-            {
+            } catch (SQLException sqle) {
                 System.out.println("Failed to connect to database attempt " + Integer.toString(i));
                 System.out.println(sqle.getMessage());
-            }
-            catch (InterruptedException ie)
-            {
+                sqle.printStackTrace(); // Print detailed error information
+            } catch (InterruptedException ie) {
                 System.out.println("Thread interrupted? Should not happen.");
             }
         }
     }
+
 
     /**
      * Disconnect from the MySQL database.
@@ -118,40 +114,49 @@ public class App
 //        }
 //    }
 
-    public Employee getSalary()
-    {
-        try
-        {
-            // Create an SQL statement
+    public List<Employee> getAllSalaries() {
+        List<Employee> employees = new ArrayList<>();  // List to store employees
+        try {
             Statement stmt = con.createStatement();
-            // Create string for SQL statement
-            String strSelect =
-                    "SELECT emp_no, first_name, last_name, salary "
-                            + "FROM employees "
-                            + "ORDER BY salary DESC ";
-            // Execute SQL statement
-            ResultSet rset = stmt.executeQuery(strSelect);
-            // Return new employee if valid.
-            // Check one is returned
-            if (rset.next())
-            {
-                Employee emp = new Employee();
-                emp.emp_no = rset.getInt("emp_no");
-                emp.first_name = rset.getString("first_name");
-                emp.last_name = rset.getString("last_name");
-                emp.salary = rset.getInt("salary");
-                return emp;
+            int pageSize = 100; // Number of records to fetch at once
+            int pageNumber = 0; // Start from the first page
+
+            while (true) {
+                String strSelect =
+                        "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary " +
+                                "FROM employees " +
+                                "JOIN salaries ON employees.emp_no = salaries.emp_no " +
+                                "ORDER BY salaries.salary DESC " +
+                                "LIMIT " + pageSize + " OFFSET " + (pageNumber * pageSize);
+
+                // Execute SQL statement
+                ResultSet rset = stmt.executeQuery(strSelect);
+
+                // Check if any data is returned
+                if (!rset.isBeforeFirst()) {
+                    break; // Exit the loop if no more records are found
+                }
+
+                // Loop through the ResultSet to retrieve all employees
+                while (rset.next()) {
+                    Employee emp = new Employee();
+                    emp.emp_no = rset.getInt("emp_no");
+                    emp.first_name = rset.getString("first_name");
+                    emp.last_name = rset.getString("last_name");
+                    emp.salary = rset.getInt("salary");
+                    employees.add(emp); // Add employee to the list
+                }
+
+                pageNumber++; // Move to the next page
             }
-            else
-                return null;
-        }
-        catch (Exception e)
-        {
+            return employees; // Return the list of employees
+        } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Failed to get employee details");
             return null;
         }
     }
+
 
     public void displayEmployee(Employee emp)
     {
@@ -168,5 +173,15 @@ public class App
         }
     }
 
+    public void displaySalaries(List<Employee> salaries){
+        if(salaries != null && !salaries.isEmpty()) {
+        for(Employee emp : salaries) {
+            System.out.println("ID: " + emp.emp_no + "First Name: " + emp.first_name + "Last Name: " + emp.last_name + "Salary: " + emp.salary);
+        }
+        }
+        else {
+            System.out.println("No salaries to display.");
+        }
 
+    }
 }
