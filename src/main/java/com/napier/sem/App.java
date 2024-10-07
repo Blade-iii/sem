@@ -128,9 +128,6 @@ public class App
     }
 
 
-
-
-
     public Employee addEmployee(int ID, String firstName, String lastName, String gender, String hireDateStr, String birthDateStr) {
         String strInsert =
                 "INSERT INTO employees (emp_no, first_name, last_name, gender,  hire_date, birth_date) " +
@@ -174,7 +171,17 @@ public class App
             return null; // Return null in case of failure
         }
     }
+    public Employee deleteEmployee(int ID) {
+        String strDelete = "DELETE FROM employees WHERE emp_no = " + ID;
+        try {
+            rset = stmt.executeQuery(strDelete);
 
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to delete employee");
+        }
+        return null;
+    }
 
 
 
