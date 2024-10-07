@@ -14,9 +14,17 @@ public class App
         // Connect to database
         a.connect();
 
-      //  a.addEmployee(500000,"Simon","Pegg","M","2024-12-19","1985-07-02");
+        a.addEmployee(500000,"Simon","Pegg","M","2024-12-19","1985-07-02");
 
-        a.getEmployee(500000);
+        // Retrieve the employee with ID 10002 (change to a valid ID if necessary)
+        Employee emp = a.getEmployee(500000);
+
+        // Display the retrieved employee
+        if (emp != null) {
+            a.displayEmployee(emp); // This will display employee details
+        } else {
+            System.out.println("Employee not found.");
+        }
 
         // Get all salaries
         //a.displaySalaries(a.getAllSalaries());
