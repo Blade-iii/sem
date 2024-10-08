@@ -19,12 +19,17 @@ public class App
         // Retrieve the employee with ID 10002 (change to a valid ID if necessary)
         Employee emp = a.getEmployee(500000);
 
+
+        a.deleteEmployee(500000);
+
         // Display the retrieved employee
         if (emp != null) {
             a.displayEmployee(emp); // This will display employee details
         } else {
             System.out.println("Employee not found.");
         }
+
+
 
         // Get all salaries
         //a.displaySalaries(a.getAllSalaries());
@@ -171,18 +176,30 @@ public class App
             return null; // Return null in case of failure
         }
     }
-    public Employee deleteEmployee(int ID) {
-        String strDelete = "DELETE FROM employees WHERE emp_no = " + ID;
+    public boolean deleteEmployee(int ID) {
+        String strDelete = "DELETE FROM employees WHERE emp_no = ?";
         try {
-            rset = stmt.executeQuery(strDelete);
+            // Use a PreparedStatement to prevent SQL injection
+            PreparedStatement pstmt = con.prepareStatement(strDelete);
+            pstmt.setInt(1, ID);  // Set the employee ID into the query
+
+            // Execute the update query, which returns the number of affected rows
+            int rowsAffected = pstmt.executeUpdate();
+
+            // If one or more rows were affected, deletion was successful
+            if (rowsAffected > 0) {
+                System.out.println("Employee deleted successfully.");
+                return true;
+            } else {
+                System.out.println("No employee found with ID: " + ID);
+            }
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println("Failed to delete employee");
+            System.out.println("Failed to delete employee.");
         }
-        return null;
+        return false;  // Return false if the deletion failed
     }
-
 
 
     public List<Employee> getAllSalaries() {
