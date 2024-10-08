@@ -29,20 +29,22 @@ public class App
             System.out.println("Employee not found.");
         }
 
-        Employee empToUpdate = new Employee();
-        empToUpdate.first_name = "John";
-        empToUpdate.last_name = "Doe";
-        empToUpdate.gender = "M";
-        empToUpdate.hire_date = Date.valueOf("2020-01-01");
-        empToUpdate.birth_date = Date.valueOf("1980-05-15");
+        Employee updatedEmployee = new Employee();
+        updatedEmployee.first_name = "John";
+        updatedEmployee.last_name = "Doe";
+        updatedEmployee.gender = "M";
+        updatedEmployee.hire_date = Date.valueOf("2020-10-10");
+        updatedEmployee.birth_date = Date.valueOf("1990-06-15");
+        updatedEmployee.salary = 70000; // New salary
 
-        boolean updated = a.updateEmployee(500000, empToUpdate);
+        boolean isUpdated = a.updateEmployee(10002, updatedEmployee);
 
-        if (updated) {
-            System.out.println("Employee was updated successfully.");
+        if (isUpdated) {
+            System.out.println("Employee updated successfully.");
         } else {
             System.out.println("Failed to update employee.");
         }
+
 
         // Get all salaries
         //a.displaySalaries(a.getAllSalaries());
@@ -116,10 +118,13 @@ public class App
     public Employee getEmployee(int ID) {
         Statement stmt = null;
         ResultSet rset = null;
+
         try {
             stmt = con.createStatement();
             String strSelect = "SELECT emp_no, first_name, last_name FROM employees WHERE emp_no = " + ID;
             rset = stmt.executeQuery(strSelect);
+            con.setAutoCommit(true);  // Ensure auto-commit is enabled
+
 
             if (rset.next()) {
                 Employee emp = new Employee();
@@ -216,10 +221,14 @@ public class App
 
     public boolean updateEmployee(int ID, Employee newEmp) {
         // SQL query to retrieve the old employee details
-        String strSelect = "SELECT emp_no, first_name, last_name, gender, hire_date, birth_date FROM employees WHERE emp_no = ?";
+        String strSelect = "SELECT e.emp_no, e.first_name, e.last_name, e.gender, e.hire_date, e.birth_date, s.salary " +
+                "FROM employees e " +
+                "JOIN salaries s ON e.emp_no = s.emp_no " +
+                "WHERE e.emp_no = ?";
 
-        // SQL update statement
-        String strUpdate = "UPDATE employees SET first_name = ?, last_name = ?, gender = ?, hire_date = ?, birth_date = ? WHERE emp_no = ?";
+        // SQL update statements
+        String strUpdateEmployee = "UPDATE employees SET first_name = ?, last_name = ?, gender = ?, hire_date = ?, birth_date = ? WHERE emp_no = ?";
+        String strUpdateSalary = "UPDATE salaries SET salary = ? WHERE emp_no = ?";
 
         Employee oldEmp = null; // To store old employee details
 
@@ -238,6 +247,7 @@ public class App
                 oldEmp.gender = rset.getString("gender");
                 oldEmp.hire_date = rset.getDate("hire_date");
                 oldEmp.birth_date = rset.getDate("birth_date");
+                oldEmp.salary = rset.getInt("salary"); // Get old salary as well
 
                 // Output the old details
                 System.out.println("Old Employee Details:");
@@ -248,24 +258,37 @@ public class App
             }
 
             // Now, perform the update with the new employee details
-            PreparedStatement updateStmt = con.prepareStatement(strUpdate);
-            updateStmt.setString(1, newEmp.first_name);  // Update first name
-            updateStmt.setString(2, newEmp.last_name);   // Update last name
-            updateStmt.setString(3, newEmp.gender);      // Update gender
-            updateStmt.setDate(4, (Date) newEmp.hire_date);     // Update hire date
-            updateStmt.setDate(5, (Date) newEmp.birth_date);    // Update birth date
-            updateStmt.setInt(6, ID);                    // The employee ID
+            PreparedStatement updateStmtEmp = con.prepareStatement(strUpdateEmployee);
+            updateStmtEmp.setString(1, newEmp.first_name);  // Update first name
+            updateStmtEmp.setString(2, newEmp.last_name);   // Update last name
+            updateStmtEmp.setString(3, newEmp.gender);      // Update gender
+            updateStmtEmp.setDate(4, (Date) newEmp.hire_date);     // Update hire date
+            updateStmtEmp.setDate(5, (Date) newEmp.birth_date);    // Update birth date
+            updateStmtEmp.setInt(6, ID);                    // Keep the employee ID unchanged
 
-            // Execute the update query
-            int rowsAffected = updateStmt.executeUpdate();
+            // Execute the update for the employee
+            int rowsAffectedEmp = updateStmtEmp.executeUpdate();
 
-            if (rowsAffected > 0) {
+            // Now update the salary
+            PreparedStatement updateStmtSalary = con.prepareStatement(strUpdateSalary);
+            updateStmtSalary.setInt(1, newEmp.salary); // Set new salary
+            updateStmtSalary.setInt(2, ID);            // Set the employee ID
+
+            // Execute the update for the salary
+            int rowsAffectedSalary = updateStmtSalary.executeUpdate();
+
+            // Check if both updates were successful
+            if (rowsAffectedEmp > 0 && rowsAffectedSalary > 0) {
+                // Ensure the new employee retains the same emp_no (ID) and salary
+                newEmp.emp_no = ID;   // Set the employee ID back to the newEmp object
+                newEmp.salary = oldEmp.salary; // Ensure salary is updated correctly
+
                 // Output the new details after update
                 System.out.println("New Employee Details:");
                 displayEmployee(newEmp); // Show the updated employee details
                 return true;
             } else {
-                System.out.println("Failed to update employee.");
+                System.out.println("Failed to update employee or salary.");
             }
 
         } catch (SQLException e) {
@@ -275,6 +298,7 @@ public class App
 
         return false;  // Return false if the update failed
     }
+
 
 
 
@@ -327,12 +351,12 @@ public class App
         if (emp != null)
         {
             System.out.println(
-                    emp.emp_no + " "
-                            + emp.first_name + " "
-                            + emp.last_name + "\n"
-                            + emp.title + "\n"
-                            + "Salary:" + emp.salary + "\n"
-                            + emp.dept_name + "\n"
+                    "Emp No: " +emp.emp_no + " "
+                     + "First Name: " + emp.first_name + " "
+                            + "Last Name: " + emp.last_name + "\n"
+                            + "Title: " + emp.title + "\n"
+                            + "Salary: " + emp.salary + "\n"
+                            + "Dept: "+  emp.dept_name + "\n"
                             + "Manager: " + emp.manager + "\n");
         }
     }
