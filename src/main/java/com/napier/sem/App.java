@@ -20,7 +20,7 @@ public class App
         Employee emp = a.getEmployee(500000);
 
 
-        a.deleteEmployee(500000);
+        //a.deleteEmployee(500000);
 
         // Display the retrieved employee
         if (emp != null) {
@@ -29,7 +29,20 @@ public class App
             System.out.println("Employee not found.");
         }
 
+        Employee empToUpdate = new Employee();
+        empToUpdate.first_name = "John";
+        empToUpdate.last_name = "Doe";
+        empToUpdate.gender = "M";
+        empToUpdate.hire_date = Date.valueOf("2020-01-01");
+        empToUpdate.birth_date = Date.valueOf("1980-05-15");
 
+        boolean updated = a.updateEmployee(500000, empToUpdate);
+
+        if (updated) {
+            System.out.println("Employee was updated successfully.");
+        } else {
+            System.out.println("Failed to update employee.");
+        }
 
         // Get all salaries
         //a.displaySalaries(a.getAllSalaries());
@@ -200,6 +213,70 @@ public class App
         }
         return false;  // Return false if the deletion failed
     }
+
+    public boolean updateEmployee(int ID, Employee newEmp) {
+        // SQL query to retrieve the old employee details
+        String strSelect = "SELECT emp_no, first_name, last_name, gender, hire_date, birth_date FROM employees WHERE emp_no = ?";
+
+        // SQL update statement
+        String strUpdate = "UPDATE employees SET first_name = ?, last_name = ?, gender = ?, hire_date = ?, birth_date = ? WHERE emp_no = ?";
+
+        Employee oldEmp = null; // To store old employee details
+
+        try {
+            // First, retrieve the old employee details
+            PreparedStatement selectStmt = con.prepareStatement(strSelect);
+            selectStmt.setInt(1, ID); // Set the employee ID
+            ResultSet rset = selectStmt.executeQuery();
+
+            if (rset.next()) {
+                // Create an Employee object to hold old details
+                oldEmp = new Employee();
+                oldEmp.emp_no = rset.getInt("emp_no");
+                oldEmp.first_name = rset.getString("first_name");
+                oldEmp.last_name = rset.getString("last_name");
+                oldEmp.gender = rset.getString("gender");
+                oldEmp.hire_date = rset.getDate("hire_date");
+                oldEmp.birth_date = rset.getDate("birth_date");
+
+                // Output the old details
+                System.out.println("Old Employee Details:");
+                displayEmployee(oldEmp);
+            } else {
+                System.out.println("No employee found with ID: " + ID);
+                return false;
+            }
+
+            // Now, perform the update with the new employee details
+            PreparedStatement updateStmt = con.prepareStatement(strUpdate);
+            updateStmt.setString(1, newEmp.first_name);  // Update first name
+            updateStmt.setString(2, newEmp.last_name);   // Update last name
+            updateStmt.setString(3, newEmp.gender);      // Update gender
+            updateStmt.setDate(4, (Date) newEmp.hire_date);     // Update hire date
+            updateStmt.setDate(5, (Date) newEmp.birth_date);    // Update birth date
+            updateStmt.setInt(6, ID);                    // The employee ID
+
+            // Execute the update query
+            int rowsAffected = updateStmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                // Output the new details after update
+                System.out.println("New Employee Details:");
+                displayEmployee(newEmp); // Show the updated employee details
+                return true;
+            } else {
+                System.out.println("Failed to update employee.");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to update employee.");
+        }
+
+        return false;  // Return false if the update failed
+    }
+
+
 
 
     public List<Employee> getAllSalaries() {
