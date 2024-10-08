@@ -12,12 +12,23 @@ rectangle "HR System" {
     usecase UC2 as "Salary of all employees by department"
     usecase UC3 as "Salaries of employees in department"
     usecase UC4 as "Get salaries by role"
+    usecase UC5 as "Add Employee Details"
+    usecase UC6 as "View Employees"
+    usecase UC7 as "Update Employee Details"
+    usecase UC8 as "Remove Employee"
 
     usecase UCa as "Print salaries"
+    usecase UCA as "Display Employees"
+    usecase ucaUpdate as "Updated Employee Details"
+    usecase ucaDelete as "Deleted Employee Details"
 
     HR - UC1
     HR - UC2
     HR - UC4
+    HR - UC5
+    HR - UC6
+    HR - UC7
+    HR - UC8
 
     DM - UC3
 
@@ -33,6 +44,20 @@ rectangle "HR System" {
 
     UC4 ..> UCa : include
     UC4 - Database
+
+    UC5 ..> UCa : include
+    UC5 - Database
+
+    UC6 ..> UCA : include
+    UC6 - Database
+
+    UC7 ..> ucaUpdate : include
+    UC7 - Database
+
+    UC8 ..> ucaDelete : include
+    UC8 - Database
+
+
 }
 
 @enduml
