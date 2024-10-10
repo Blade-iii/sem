@@ -49,6 +49,9 @@ public class App
         // Get all salaries
         //a.displaySalaries(a.getAllSalaries());
 
+        // Get salary by role
+        a.displaySalaries(a.getSalariesByRole());
+
 
 
         // Disconnect from database
@@ -299,10 +302,6 @@ public class App
         return false;  // Return false if the update failed
     }
 
-
-
-
-
     public List<Employee> getAllSalaries() {
         List<Employee> employees = new ArrayList<>();  // List to store employees
         try {
@@ -345,6 +344,37 @@ public class App
             return null;
         }
     }
+    public List<Employee> getSalariesByRole() {
+        List<Employee> employees = new ArrayList<>();
+        String strSelect = "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary, titles.title "
+                + "FROM employees "
+                + "JOIN salaries ON employees.emp_no = salaries.emp_no "
+                + "JOIN titles ON employees.emp_no = titles.emp_no "
+                + "WHERE salaries.to_date = '9999-01-01' AND titles.to_date = '9999-01-01' "
+                + "AND titles.title = 'Engineer' "
+                + "ORDER BY employees.emp_no ASC LIMIT 100 OFFSET 0";
+
+        try (Statement stmt = con.createStatement();
+             ResultSet rset = stmt.executeQuery(strSelect)) {
+
+            // Retrieve all engineers' salaries
+            while (rset.next()) {
+                Employee emp = new Employee();
+                emp.emp_no = rset.getInt("emp_no");
+                emp.first_name = rset.getString("first_name");
+                emp.last_name = rset.getString("last_name");
+                emp.salary = rset.getInt("salary");
+                emp.title = rset.getString("title");
+                employees.add(emp);
+            }
+        } catch (SQLException e) {
+            System.out.println("Failed to retrieve salaries by role: " + e.getMessage());
+        }
+
+        return employees;
+    }
+
+
 
     public void displayEmployee(Employee emp)
     {
