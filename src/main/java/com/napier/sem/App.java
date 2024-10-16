@@ -4,16 +4,14 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
-public class App
-{
-    public static void main(String[] args)
-    {
+public class App {
+    public static void main(String[] args) {
         // Create new Application
         App a = new App();
 
         // Connect to database
         a.connect();
-
+    /*
         a.addEmployee(500000,"Simon","Pegg","M","2024-12-19","1985-07-02");
 
         // Retrieve the employee with ID 10002 (change to a valid ID if necessary)
@@ -52,7 +50,7 @@ public class App
         // Get salary by role
         a.displaySalaries(a.getSalariesByRole());
 
-
+*/
 
         // Disconnect from database
         a.disconnect();
@@ -103,21 +101,20 @@ public class App
     /**
      * Disconnect from the MySQL database.
      */
-    public void disconnect()
-    {
-        if (con != null)
-        {
-            try
-            {
+    public void disconnect() {
+        if (con != null) {
+            try {
                 // Close connection
                 con.close();
-            }
-            catch (Exception e)
-            {
+            } catch (Exception e) {
                 System.out.println("Error closing connection to database");
             }
         }
     }
+
+    /*
+
+
     public Employee getEmployee(int ID) {
         Statement stmt = null;
         ResultSet rset = null;
@@ -375,31 +372,29 @@ public class App
     }
 
 
-
-    public void displayEmployee(Employee emp)
-    {
-        if (emp != null)
-        {
-            System.out.println(
-                    "Emp No: " +emp.emp_no + " "
-                     + "First Name: " + emp.first_name + " "
-                            + "Last Name: " + emp.last_name + "\n"
-                            + "Title: " + emp.title + "\n"
-                            + "Salary: " + emp.salary + "\n"
-                            + "Dept: "+  emp.dept_name + "\n"
-                            + "Manager: " + emp.manager + "\n");
-        }
-    }
-
     public void displaySalaries(List<Employee> salaries){
         if(salaries != null && !salaries.isEmpty()) {
-        for(Employee emp : salaries) {
-            System.out.println("ID: " + emp.emp_no + "First Name: " + emp.first_name + "Last Name: " + emp.last_name + "Salary: " + emp.salary);
-        }
+            for(Employee emp : salaries) {
+                System.out.println("ID: " + emp.emp_no + "First Name: " + emp.first_name + "Last Name: " + emp.last_name + "Salary: " + emp.salary);
+            }
         }
         else {
             System.out.println("No salaries to display.");
         }
 
+    }
+}
+  */
+    public void displayEmployee(Employee emp) {
+        if (emp != null) {
+            System.out.println(
+                    "Emp No: " + emp.emp_no + " "
+                            + "First Name: " + emp.first_name + " "
+                            + "Last Name: " + emp.last_name + "\n"
+                            + "Title: " + emp.title + "\n"
+                            + "Salary: " + emp.salary + "\n"
+                            + "Dept: " + emp.dept_name + "\n"
+                            + "Manager: " + emp.manager + "\n");
+        }
     }
 }
