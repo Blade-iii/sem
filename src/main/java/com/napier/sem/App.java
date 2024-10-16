@@ -419,7 +419,6 @@ public class App {
         return employees;
     }
 
-
     public void displaySalaries(List<Employee> salaries){
         if(salaries != null && !salaries.isEmpty()) {
             for(Employee emp : salaries) {
