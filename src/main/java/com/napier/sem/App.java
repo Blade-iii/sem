@@ -11,6 +11,8 @@ public class App {
 
         // Connect to database
         a.connect();
+
+        // My solution in the comments
     /*
         a.addEmployee(500000,"Simon","Pegg","M","2024-12-19","1985-07-02");
 
@@ -52,6 +54,10 @@ public class App {
 
 */
 
+        // Get employee
+        Employee emp = a.getEmployee(255530);
+        // Display Results
+        a.displayEmployee(emp);
         // Disconnect from database
         a.disconnect();
     }
@@ -111,46 +117,41 @@ public class App {
             }
         }
     }
-
-    /*
-
-
-    public Employee getEmployee(int ID) {
-        Statement stmt = null;
-        ResultSet rset = null;
-
-        try {
-            stmt = con.createStatement();
-            String strSelect = "SELECT emp_no, first_name, last_name FROM employees WHERE emp_no = " + ID;
-            rset = stmt.executeQuery(strSelect);
-            con.setAutoCommit(true);  // Ensure auto-commit is enabled
-
-
-            if (rset.next()) {
+    public Employee getEmployee(int ID)
+    {
+        try
+        {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT emp_no, first_name, last_name "
+                            + "FROM employees "
+                            + "WHERE emp_no = " + ID;
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Return new employee if valid.
+            // Check one is returned
+            if (rset.next())
+            {
                 Employee emp = new Employee();
                 emp.emp_no = rset.getInt("emp_no");
                 emp.first_name = rset.getString("first_name");
                 emp.last_name = rset.getString("last_name");
                 return emp;
-            } else {
-                return null; // Employee not found
             }
-        } catch (Exception e) {
+            else
+                return null;
+        }
+        catch (Exception e)
+        {
             System.out.println(e.getMessage());
             System.out.println("Failed to get employee details");
             return null;
-        } finally {
-            // Close ResultSet and Statement to prevent resource leaks
-            try {
-                if (rset != null) rset.close();
-                if (stmt != null) stmt.close();
-            } catch (SQLException e) {
-                System.out.println("Failed to close resources: " + e.getMessage());
-            }
         }
     }
 
-
+    /*
     public Employee addEmployee(int ID, String firstName, String lastName, String gender, String hireDateStr, String birthDateStr) {
         String strInsert =
                 "INSERT INTO employees (emp_no, first_name, last_name, gender,  hire_date, birth_date) " +
@@ -385,15 +386,17 @@ public class App {
     }
 }
   */
-    public void displayEmployee(Employee emp) {
-        if (emp != null) {
+    public void displayEmployee(Employee emp)
+    {
+        if (emp != null)
+        {
             System.out.println(
-                    "Emp No: " + emp.emp_no + " "
-                            + "First Name: " + emp.first_name + " "
-                            + "Last Name: " + emp.last_name + "\n"
-                            + "Title: " + emp.title + "\n"
-                            + "Salary: " + emp.salary + "\n"
-                            + "Dept: " + emp.dept_name + "\n"
+                    emp.emp_no + " "
+                            + emp.first_name + " "
+                            + emp.last_name + "\n"
+                            + emp.title + "\n"
+                            + "Salary:" + emp.salary + "\n"
+                            + emp.dept_name + "\n"
                             + "Manager: " + emp.manager + "\n");
         }
     }
