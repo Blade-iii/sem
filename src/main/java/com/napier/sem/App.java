@@ -157,6 +157,12 @@ public class App {
         }
     }
 
+    /**
+     *
+     * @param firstName Firstname of the employee
+     * @param lastName Lastname of the employee
+     * @return The employee query searching for the first and last name provided
+     */
     public ArrayList<Employee> getEmployeeManager(String firstName, String lastName){
         try {
             // Create an SQL statement
