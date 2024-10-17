@@ -66,8 +66,8 @@ public class App {
         // Test the size of the returned data - should be 240124
        // System.out.println(employees.size());
 
-       a.displaySalariesByDepartment( a.getSalariesByDepartment("Sales"));
-
+      // a.displaySalariesByDepartment( a.getSalariesByDepartment("Sales"));
+        a.displaySalariesByDepartment(a.getDepartment("Marketing"));
         // Disconnect from database
         a.disconnect();
     }
@@ -190,6 +190,48 @@ public class App {
             return null;
         }
     }
+
+    /**
+     *
+     * @param dept The department name
+     * @return The array list of department sql query
+     */
+    public ArrayList<Employee> getDepartment(String dept){
+        try {
+            // Create an SQL statement
+            Statement stmt = con.createStatement();
+            // Create string for SQL statement
+            String strSelect =
+                    "SELECT *" +
+                            "FROM employees, salaries, dept_emp, departments " +
+                            "WHERE employees.emp_no = salaries.emp_no " +
+                            "AND employees.emp_no = dept_emp.emp_no " +
+                            "AND dept_emp.dept_no = departments.dept_no " +
+                            "AND salaries.to_date = '9999-01-01' " +
+                            "AND departments.dept_name = '" + dept + "' " +
+                            "ORDER BY employees.emp_no ASC";
+            // Execute SQL statement
+            ResultSet rset = stmt.executeQuery(strSelect);
+            // Extract department information
+            ArrayList<Employee> salary = new ArrayList<Employee>();
+
+            while (rset.next()) {
+                Employee emp = new Employee();
+                emp.emp_no = rset.getInt("employees.emp_no");
+                emp.first_name = rset.getString("employees.first_name");
+                emp.last_name = rset.getString("employees.last_name");
+                emp.salary = rset.getInt("salaries.salary");
+                emp.dept_name = rset.getString("dept_name");
+                salary.add(emp);
+            }
+            return salary;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Failed to get departments details");
+            return null;
+        }
+    }
+
 
     /**
      * @param dept Department from the user
