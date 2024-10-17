@@ -190,6 +190,11 @@ public class App {
             return null;
         }
     }
+
+    /**
+     * @param dept Department from the user
+     * @return Salary by department
+     */
     public ArrayList<Employee> getSalariesByDepartment(String dept){
         try {
             // Create an SQL statement
@@ -225,6 +230,11 @@ public class App {
             return null;
         }
     }
+
+    /**
+     *
+     * @param salary Arraylist of the sql statement
+     */
     public void displaySalariesByDepartment(ArrayList<Employee> salary) {
         if (salary == null) {
             System.out.println("No salaries found");
