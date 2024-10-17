@@ -54,17 +54,17 @@ public class App {
 */
 
         // Get employee
-        Employee emp = a.getEmployee(255530);
+        //Employee emp = a.getEmployee(255530);
         // Display Results
-        a.displayEmployee(emp);
+        //a.displayEmployee(emp);
 
         // Extract employee salary information
-        ArrayList<Employee> employees = a.getAllSalaries();
+        //ArrayList<Employee> employees = a.getAllSalaries();
         // Print the salaries
-        a.printSalaries(employees);
+       // a.printSalaries(employees);
 
         // Test the size of the returned data - should be 240124
-        System.out.println(employees.size());
+       // System.out.println(employees.size());
 
        a.displaySalariesByDepartment( a.getSalariesByDepartment("Sales"));
 
@@ -196,13 +196,13 @@ public class App {
             Statement stmt = con.createStatement();
             // Create string for SQL statement
             String strSelect =
-                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary" +
-                            "FROM employees, salaries, dept_emp, departments" +
-                            "WHERE employees.emp_no = salaries.emp_no" +
-                            "AND employees.emp_no = dept_emp.emp_no" +
-                            "AND dept_emp.dept_no = departments.dept_no" +
-                            "AND salaries.to_date = '9999-01-01'" +
-                            "AND departments.dept_no = '<dept_no>'" +
+                    "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary, departments.dept_name " +
+                            "FROM employees, salaries, dept_emp, departments " +
+                            "WHERE employees.emp_no = salaries.emp_no " +
+                            "AND employees.emp_no = dept_emp.emp_no " +
+                            "AND dept_emp.dept_no = departments.dept_no " +
+                            "AND salaries.to_date = '9999-01-01' " +
+                            "AND departments.dept_name = '" + dept + "' " +
                             "ORDER BY employees.emp_no ASC";
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
@@ -215,7 +215,7 @@ public class App {
                 emp.first_name = rset.getString("employees.first_name");
                 emp.last_name = rset.getString("employees.last_name");
                 emp.salary = rset.getInt("salaries.salary");
-                emp.dept_name = rset.getString("department.dept_name");
+                emp.dept_name = rset.getString("dept_name");
                 salary.add(emp);
             }
             return salary;
@@ -226,7 +226,7 @@ public class App {
         }
     }
     public void displaySalariesByDepartment(ArrayList<Employee> salary) {
-        if (salary != null) {
+        if (salary == null) {
             System.out.println("No salaries found");
             return;
         }
