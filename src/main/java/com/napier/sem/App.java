@@ -66,6 +66,8 @@ public class App {
         // Test the size of the returned data - should be 240124
         System.out.println(employees.size());
 
+       a.displaySalariesByDepartment( a.getSalariesByDepartment("Sales"));
+
         // Disconnect from database
         a.disconnect();
     }
@@ -188,7 +190,7 @@ public class App {
             return null;
         }
     }
-    public ArrayList<Employee> getSalariesByDepartment(Department dept){
+    public ArrayList<Employee> getSalariesByDepartment(String dept){
         try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
@@ -205,23 +207,33 @@ public class App {
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
             // Extract department information
-            ArrayList<Employee> employees = new ArrayList<Employee>();
+            ArrayList<Employee> salary = new ArrayList<Employee>();
+
             while (rset.next()) {
                 Employee emp = new Employee();
                 emp.emp_no = rset.getInt("employees.emp_no");
                 emp.first_name = rset.getString("employees.first_name");
                 emp.last_name = rset.getString("employees.last_name");
                 emp.salary = rset.getInt("salaries.salary");
-                employees.add(emp);
+                emp.dept_name = rset.getString("department.dept_name");
+                salary.add(emp);
             }
-            return employees;
+            return salary;
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            System.out.println("Failed to get salary details");
+            System.out.println("Failed to get departments details");
             return null;
         }
     }
-
+    public void displaySalariesByDepartment(ArrayList<Employee> salary) {
+        if (salary != null) {
+            System.out.println("No salaries found");
+            return;
+        }
+        for(Employee emp : salary) {
+            System.out.println("Employee No: " + emp.emp_no + ", First Name: " + emp.first_name + ", Last Name: " + emp.last_name+ ", Salary: " + emp.salary + ", Department Name: " + emp.dept_name);
+        }
+    }
 
     /*
     public Employee addEmployee(int ID, String firstName, String lastName, String gender, String hireDateStr, String birthDateStr) {
