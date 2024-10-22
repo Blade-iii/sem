@@ -11,48 +11,6 @@ public class App {
         // Connect to database
         a.connect();
 
-        // My solution in the comments
-    /*
-        a.addEmployee(500000,"Simon","Pegg","M","2024-12-19","1985-07-02");
-
-        // Retrieve the employee with ID 10002 (change to a valid ID if necessary)
-        Employee emp = a.getEmployee(500000);
-
-
-        //a.deleteEmployee(500000);
-
-        // Display the retrieved employee
-        if (emp != null) {
-            a.displayEmployee(emp); // This will display employee details
-        } else {
-            System.out.println("Employee not found.");
-        }
-
-        Employee updatedEmployee = new Employee();
-        updatedEmployee.first_name = "John";
-        updatedEmployee.last_name = "Doe";
-        updatedEmployee.gender = "M";
-        updatedEmployee.hire_date = Date.valueOf("2020-10-10");
-        updatedEmployee.birth_date = Date.valueOf("1990-06-15");
-        updatedEmployee.salary = 70000; // New salary
-
-        boolean isUpdated = a.updateEmployee(10002, updatedEmployee);
-
-        if (isUpdated) {
-            System.out.println("Employee updated successfully.");
-        } else {
-            System.out.println("Failed to update employee.");
-        }
-
-
-        // Get all salaries
-        //a.displaySalaries(a.getAllSalaries());
-
-        // Get salary by role
-        a.displaySalaries(a.getSalariesByRole());
-
-*/
-
         // Get employee
         //Employee emp = a.getEmployee(255530);
         // Display Results
@@ -72,7 +30,6 @@ public class App {
         // Disconnect from database
         a.disconnect();
     }
-
 
     /**
      * Connection to MySQL database.
@@ -606,6 +563,44 @@ public class App {
         }
     }
 
-    public void method() {
-    }
+        /*
+        a.addEmployee(500000,"Simon","Pegg","M","2024-12-19","1985-07-02");
+
+        // Retrieve the employee with ID 10002 (change to a valid ID if necessary)
+        Employee emp = a.getEmployee(500000);
+
+
+        //a.deleteEmployee(500000);
+
+        // Display the retrieved employee
+        if (emp != null) {
+            a.displayEmployee(emp); // This will display employee details
+        } else {
+            System.out.println("Employee not found.");
+        }
+
+        Employee updatedEmployee = new Employee();
+        updatedEmployee.first_name = "John";
+        updatedEmployee.last_name = "Doe";
+        updatedEmployee.gender = "M";
+        updatedEmployee.hire_date = Date.valueOf("2020-10-10");
+        updatedEmployee.birth_date = Date.valueOf("1990-06-15");
+        updatedEmployee.salary = 70000; // New salary
+
+        boolean isUpdated = a.updateEmployee(10002, updatedEmployee);
+
+        if (isUpdated) {
+            System.out.println("Employee updated successfully.");
+        } else {
+            System.out.println("Failed to update employee.");
+        }
+
+
+        // Get all salaries
+        //a.displaySalaries(a.getAllSalaries());
+
+        // Get salary by role
+        a.displaySalaries(a.getSalariesByRole());
+
+*/
 }
