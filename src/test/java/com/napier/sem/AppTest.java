@@ -23,4 +23,17 @@ public class AppTest
     {
         app.printSalaries(null);
     }
+
+    @Test
+    void printSalriesTestEmpty(){
+        ArrayList<Employee> employees = new ArrayList<Employee>();
+        app.printSalaries(employees);
+    }
+
+    @Test
+    void printSalriesTestContainsNull(){
+        ArrayList<Employee> employees = new ArrayList<Employee>();
+        employees.add(null);
+        app.printSalaries(employees);
+    }
 }
