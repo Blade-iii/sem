@@ -36,4 +36,17 @@ public class AppTest
         employees.add(null);
         app.printSalaries(employees);
     }
+
+    @Test
+    void printSalaries(){
+        ArrayList<Employee> employees = new ArrayList<Employee>();
+        Employee emp = new Employee();
+        emp.emp_no= 1;
+        emp.first_name= "John";
+        emp.last_name= "Smith";
+        emp.title="Engineering";
+        emp.salary=55000;
+        employees.add(emp);
+        app.printSalaries(employees);
+    }
 }
