@@ -1,8 +1,10 @@
 package com.napier.sem;
 
+import org.junit.Ignore;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.Disabled;
 import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -21,5 +23,26 @@ public class AppIntegrationTest {
         assertEquals(employee.emp_no, 255530);
         assertEquals(employee.first_name, "Ronghao");
         assertEquals(employee.last_name, "Garigliano");
+    }
+
+    @Test
+    void testGetDepartments() {
+        ArrayList<Employee> employees = app.getSalariesByDepartment("Development");
+        assertEquals(employees.size(), 68392);
+    }
+
+    @Disabled
+    @Test
+    void testGetAllSalaries() {
+        ArrayList<Employee> employees = app.getAllSalaries();
+        assertEquals(employees.size(), 300024 );
+        assertNotNull(employees);
+    }
+
+    @Test
+    void testGetEmployeeManager() {
+        ArrayList<Employee> manager = app.getEmployeeManager("Masako","Angiulli");
+        assertEquals(manager.size(), 1);
+        assertNotNull(manager);
     }
 }
