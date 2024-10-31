@@ -2,6 +2,8 @@
 
 Using docker, java, github actions
 
+Code Coverage status [![codecov](https://codecov.io/gh/blade-iii/sem/graph/badge.svg?token=HT8U808VBC)](https://codecov.io/gh/blade-iii/sem)
+
 Master Build status ![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/Blade-iii/sem/.github/workflows/main.yml?branch=master)
 
 Develop Build status ![GitHub Workflow Status (branch)](https://img.shields.io/github/actions/workflow/status/Blade-iii/sem/.github/workflows/main.yml?branch=develop)
