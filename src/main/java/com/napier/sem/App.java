@@ -15,22 +15,27 @@ public class App {
             a.connect(args[0], Integer.parseInt(args[1]));
         }
 
+        ArrayList<Employee> employees = a.getSalariesByDepartment("Development");
+        a.printSalaries(employees);
+
+        /*
         // Get employee
-        //Employee emp = a.getEmployee(255530);
+        Employee emp = a.getEmployee(255530);
         // Display Results
-        //a.displayEmployee(emp);
+        a.displayEmployee(emp);
 
         // Extract employee salary information
-        //ArrayList<Employee> employees = a.getAllSalaries();
+        ArrayList<Employee> employees = a.getAllSalaries();
         // Print the salaries
-       // a.printSalaries(employees);
+        a.printSalaries(employees);
 
-        // Test the size of the returned data - should be 240124
-       // System.out.println(employees.size());
+         //Test the size of the returned data - should be 240124
+        System.out.println(employees.size());
 
-      // a.displaySalariesByDepartment( a.getSalariesByDepartment("Sales"));
-       // a.displaySalariesByDepartment(a.getDepartment("Marketing"));
+        a.displaySalariesByDepartment( a.getSalariesByDepartment("Sales"));
+        a.displaySalariesByDepartment(a.getDepartment("Marketing"));
         a.displaySalariesByDepartment(a.getEmployeeManager("Masako","Angiulli"));
+        */
         // Disconnect from database
         a.disconnect();
     }
@@ -124,12 +129,11 @@ public class App {
     }
 
     /**
-     *
      * @param firstName Firstname of the employee
-     * @param lastName Lastname of the employee
+     * @param lastName  Lastname of the employee
      * @return The employee query searching for the first and last name provided
      */
-    public ArrayList<Employee> getEmployeeManager(String firstName, String lastName){
+    public ArrayList<Employee> getEmployeeManager(String firstName, String lastName) {
         try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
@@ -203,11 +207,10 @@ public class App {
     }
 
     /**
-     *
      * @param dept The department name
      * @return The array list of department sql query
      */
-    public ArrayList<Employee> getDepartment(String dept){
+    public ArrayList<Employee> getDepartment(String dept) {
         try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
@@ -248,7 +251,7 @@ public class App {
      * @param dept Department from the user
      * @return Salary by department
      */
-    public ArrayList<Employee> getSalariesByDepartment(String dept){
+    public ArrayList<Employee> getSalariesByDepartment(String dept) {
         try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
@@ -285,7 +288,6 @@ public class App {
     }
 
     /**
-     *
      * @param salary Arraylist of the sql statement
      */
     public void displaySalariesByDepartment(ArrayList<Employee> salary) {
@@ -293,8 +295,8 @@ public class App {
             System.out.println("No salaries found");
             return;
         }
-        for(Employee emp : salary) {
-            System.out.println("Employee No: " + emp.emp_no + ", First Name: " + emp.first_name + ", Last Name: " + emp.last_name+ ", Salary: " + emp.salary + ", Department Name: " + emp.dept_name);
+        for (Employee emp : salary) {
+            System.out.println("Employee No: " + emp.emp_no + ", First Name: " + emp.first_name + ", Last Name: " + emp.last_name + ", Salary: " + emp.salary + ", Department Name: " + emp.dept_name);
         }
     }
 
@@ -550,19 +552,16 @@ public class App {
      *
      * @param employees The list of employees to print.
      */
-    public void printSalaries(ArrayList<Employee> employees)
-    {
+    public void printSalaries(ArrayList<Employee> employees) {
         // Check employees is not null
-        if (employees == null)
-        {
+        if (employees == null) {
             System.out.println("No employees");
             return;
         }
         // Print header
         System.out.println(String.format("%-10s %-15s %-20s %-8s", "Emp No", "First Name", "Last Name", "Salary"));
         // Loop over all employees in the list
-        for (Employee emp : employees)
-        {
+        for (Employee emp : employees) {
             if (emp == null)
                 continue;
             String emp_string =
