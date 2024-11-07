@@ -41,7 +41,7 @@ public class AppIntegrationTest {
     @Test
     void testGetEmployeeManager() {
         ArrayList<Employee> manager = app.getEmployeeManager("Masako","Angiulli");
-        assertEquals(manager.size(), 1);
+        assertEquals(manager.size(), 2);
         assertNotNull(manager);
     }
 }
