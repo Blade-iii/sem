@@ -1,7 +1,12 @@
 package com.napier.sem;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.List;
 
 public class App {
     public static void main(String[] args) {
@@ -15,8 +20,13 @@ public class App {
             a.connect(args[0], Integer.parseInt(args[1]));
         }
 
-        ArrayList<Employee> employees = a.getSalariesByDepartment("Development");
-        a.printSalaries(employees);
+//        ArrayList<Employee> employees = a.getSalariesByDepartment("Development");
+//        a.printSalaries(employees);
+        ArrayList<Employee> emp = a.getSalariesByRole("Manager");
+        a.outputEmployees(emp,"ManagerSalaries.md");
+
+        // Disconnect from database
+        a.disconnect();
 
         /*
         // Get employee
@@ -36,8 +46,6 @@ public class App {
         a.displaySalariesByDepartment(a.getDepartment("Marketing"));
         a.displaySalariesByDepartment(a.getEmployeeManager("Masako","Angiulli"));
         */
-        // Disconnect from database
-        a.disconnect();
     }
 
     /**
@@ -491,20 +499,34 @@ public class App {
             return null;
         }
     }
-    public List<Employee> getSalariesByRole() {
-        List<Employee> employees = new ArrayList<>();
+
+    public void displaySalaries(List<Employee> salaries){
+        if(salaries != null && !salaries.isEmpty()) {
+            for(Employee emp : salaries) {
+                System.out.println("ID: " + emp.emp_no + "First Name: " + emp.first_name + "Last Name: " + emp.last_name + "Salary: " + emp.salary);
+            }
+        }
+        else {
+            System.out.println("No salaries to display.");
+        }
+
+    }
+}
+  */
+    public ArrayList<Employee> getSalariesByRole(String role) {
+        ArrayList<Employee> employees = new ArrayList<>();
         String strSelect = "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary, titles.title "
                 + "FROM employees "
                 + "JOIN salaries ON employees.emp_no = salaries.emp_no "
                 + "JOIN titles ON employees.emp_no = titles.emp_no "
                 + "WHERE salaries.to_date = '9999-01-01' AND titles.to_date = '9999-01-01' "
-                + "AND titles.title = 'Engineer' "
-                + "ORDER BY employees.emp_no ASC LIMIT 100 OFFSET 0";
+                + "AND titles.title = role "
+                + "ORDER BY employees.emp_no ";
 
         try (Statement stmt = con.createStatement();
              ResultSet rset = stmt.executeQuery(strSelect)) {
 
-            // Retrieve all engineers' salaries
+            // Retrieve all salaries
             while (rset.next()) {
                 Employee emp = new Employee();
                 emp.emp_no = rset.getInt("emp_no");
@@ -520,20 +542,6 @@ public class App {
 
         return employees;
     }
-
-    public void displaySalaries(List<Employee> salaries){
-        if(salaries != null && !salaries.isEmpty()) {
-            for(Employee emp : salaries) {
-                System.out.println("ID: " + emp.emp_no + "First Name: " + emp.first_name + "Last Name: " + emp.last_name + "Salary: " + emp.salary);
-            }
-        }
-        else {
-            System.out.println("No salaries to display.");
-        }
-
-    }
-}
-  */
     public void displayEmployee(Employee emp) {
         if (emp != null) {
             System.out.println(
@@ -568,6 +576,39 @@ public class App {
                     String.format("%-10s %-15s %-20s %-8s",
                             emp.emp_no, emp.first_name, emp.last_name, emp.salary);
             System.out.println(emp_string);
+        }
+    }
+    /**
+     * Outputs to Markdown
+     *
+     * @param employees
+     */
+    public void outputEmployees(ArrayList<Employee> employees, String filename) {
+        // Check employees is not null
+        if (employees == null) {
+            System.out.println("No employees");
+            return;
+        }
+
+        StringBuilder sb = new StringBuilder();
+        // Print header
+        sb.append("| Emp No | First Name | Last Name | Title | Salary | Department |                    Manager |\r\n");
+        sb.append("| --- | --- | --- | --- | --- | --- | --- |\r\n");
+        // Loop over all employees in the list
+        for (Employee emp : employees) {
+            if (emp == null) continue;
+            sb.append("| " + emp.emp_no + " | " +
+                    emp.first_name + " | " + emp.last_name + " | " +
+                    emp.title + " | " + emp.salary + " | "
+                    + emp.dept_name + " | " + emp.manager + " |\r\n");
+        }
+        try {
+            new File("./reports/").mkdir();
+            BufferedWriter writer = new BufferedWriter(new FileWriter(new                                 File("./reports/" + filename)));
+            writer.write(sb.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
