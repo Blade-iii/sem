@@ -515,13 +515,19 @@ public class App {
   */
     public ArrayList<Employee> getSalariesByRole(String role) {
         ArrayList<Employee> employees = new ArrayList<>();
-        String strSelect = "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary, titles.title "
-                + "FROM employees "
-                + "JOIN salaries ON employees.emp_no = salaries.emp_no "
-                + "JOIN titles ON employees.emp_no = titles.emp_no "
-                + "WHERE salaries.to_date = '9999-01-01' AND titles.to_date = '9999-01-01' "
-                + "AND titles.title = role "
-                + "ORDER BY employees.emp_no ";
+        String strSelect = "SELECT employees.emp_no, employees.first_name, employees.last_name,\n" +
+                "titles.title, salaries.salary, departments.dept_name, dept_manager.emp_no\n" +
+                "FROM employees, salaries, titles, departments, dept_emp, dept_manager\n" +
+                "WHERE employees.emp_no = salaries.emp_no\n" +
+                "  AND salaries.to_date = '9999-01-01'\n" +
+                "  AND titles.emp_no = employees.emp_no\n" +
+                "  AND titles.to_date = '9999-01-01'\n" +
+                "  AND dept_emp.emp_no = employees.emp_no\n" +
+                "  AND dept_emp.to_date = '9999-01-01'\n" +
+                "  AND departments.dept_no = dept_emp.dept_no\n" +
+                "  AND dept_manager.dept_no = dept_emp.dept_no\n" +
+                "  AND dept_manager.to_date = '9999-01-01'\n" +
+                "  AND titles.title = '" + role + "'";
 
         try (Statement stmt = con.createStatement();
              ResultSet rset = stmt.executeQuery(strSelect)) {
