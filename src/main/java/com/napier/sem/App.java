@@ -6,8 +6,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.List;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+@SpringBootApplication
+@RestController
 public class App {
     public static void main(String[] args) {
         // Create new Application
@@ -19,14 +25,15 @@ public class App {
         } else {
             a.connect(args[0], Integer.parseInt(args[1]));
         }
+        SpringApplication.run(App.class, args);
 
 //        ArrayList<Employee> employees = a.getSalariesByDepartment("Development");
 //        a.printSalaries(employees);
-        ArrayList<Employee> emp = a.getSalariesByRole("Manager");
-        a.outputEmployees(emp,"ManagerSalaries.md");
-
-        // Disconnect from database
-        a.disconnect();
+//        ArrayList<Employee> emp = a.getSalariesByRole("Manager");
+//        a.outputEmployees(emp,"ManagerSalaries.md");
+//
+//        // Disconnect from database
+//        a.disconnect();
 
         /*
         // Get employee
@@ -51,12 +58,12 @@ public class App {
     /**
      * Connection to MySQL database.
      */
-    private Connection con = null;
+    private static Connection con = null;
 
     /**
      * Connect to the MySQL database.
      */
-    public void connect(String location, int delay) {
+    public static void connect(String location, int delay) {
         try {
             // Load Database driver
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -97,7 +104,7 @@ public class App {
     /**
      * Disconnect from the MySQL database.
      */
-    public void disconnect() {
+    public static void disconnect() {
         if (con != null) {
             try {
                 // Close connection
@@ -108,7 +115,15 @@ public class App {
         }
     }
 
-    public Employee getEmployee(int ID) {
+    /**
+     * Get a single employee record.
+     * @param ID emp_no of the employee record to get.
+     * @return The record of the employee with emp_no or null if no employee exists.
+     */
+
+
+    @RequestMapping("employee")
+    public Employee getEmployee(@RequestParam(value = "id") String ID) {
         try {
             // Create an SQL statement
             Statement stmt = con.createStatement();
@@ -184,6 +199,7 @@ public class App {
      *
      * @return A list of all employees and salaries, or null if there is an error.
      */
+    @RequestMapping("getAllSalaries")
     public ArrayList<Employee> getAllSalaries() {
         try {
             // Create an SQL statement

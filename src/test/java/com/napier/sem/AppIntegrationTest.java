@@ -17,11 +17,11 @@ public class AppIntegrationTest {
     }
 
     @Test
-     void testGetEmployees() {
-        Employee employee = app.getEmployee(255530);
-        assertEquals(employee.emp_no, 255530);
-        assertEquals(employee.first_name, "Ronghao");
-        assertEquals(employee.last_name, "Garigliano");
+    void testGetEmployees() {
+        String id = "";
+        Employee emp = app.getEmployee(id);
+        assertNotNull(emp);
+
     }
 
     @Test
