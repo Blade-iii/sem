@@ -200,7 +200,7 @@ public class App {
      *
      * @return A list of all employees and salaries, or null if there is an error.
      */
-    @GetMapping("/getAllSalaries")
+
     public ArrayList<Employee> getAllSalaries() {
         try {
             // Create an SQL statement
