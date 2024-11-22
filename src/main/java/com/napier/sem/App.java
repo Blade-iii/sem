@@ -8,6 +8,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -199,7 +200,7 @@ public class App {
      *
      * @return A list of all employees and salaries, or null if there is an error.
      */
-    @RequestMapping("getAllSalaries")
+    @GetMapping("/getAllSalaries")
     public ArrayList<Employee> getAllSalaries() {
         try {
             // Create an SQL statement
@@ -209,7 +210,9 @@ public class App {
                     "SELECT employees.emp_no, employees.first_name, employees.last_name, salaries.salary "
                             + "FROM employees, salaries, dept_emp, departments "
                             + "WHERE employees.emp_no = salaries.emp_no AND salaries.to_date = '9999-01-01' "
-                            + "ORDER BY employees.emp_no ASC";
+                            + "ORDER BY employees.emp_no ASC "
+                            + "LIMIT 10";
+
             // Execute SQL statement
             ResultSet rset = stmt.executeQuery(strSelect);
             // Extract employee information
